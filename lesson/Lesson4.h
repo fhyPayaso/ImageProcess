@@ -10,28 +10,146 @@
 
 
 #include <cmath>
+#include "../utils/MatrixUtil.h"
+#include "stdio.h"
 #include "../utils/ImageIO.h"
 
+
+const static char *OUT_BMP_SCALE = "../bitmaps/lesson4/image_scale.bmp";
+const static char *OUT_BMP_MOVE = "../bitmaps/lesson4/image_move.bmp";
+const static char *OUT_BMP_MIRROR = "../bitmaps/lesson4/image_mirror.bmp";
+const static char *OUT_BMP_ROTATE = "../bitmaps/lesson4/image_rotate.bmp";
 
 class Lesson4
 {
 
-private:
-    static int i;
-    static int j;
-
 public:
 
-    static void test()
+
+    /**
+     * 图像放缩
+     *
+     * @param widthScale 横向放缩系数
+     * @param heightScale 纵向放缩系数
+     * @param bmp_in_dir 输入图片路径
+     * @param bmp_out_dir 输出图片路径
+     */
+    static void scale(double widthScale,
+                      double heightScale,
+                      const char *bmp_in_dir,
+                      const char *bmp_out_dir = OUT_BMP_SCALE);
+
+
+    /**
+     * 图像平移
+     *
+     * @param xDiff 横向平移距离
+     * @param yDiff 纵向平移距离
+     * @param bmp_in_dir  输入图片路径
+     * @param bmp_out_dir 输出图片路径
+     */
+    static void transform(double xDiff,
+                          double yDiff,
+                          const char *bmp_in_dir,
+                          const char *bmp_out_dir = OUT_BMP_MOVE);
+
+
+    /**
+     * 图像镜像
+     *
+     * @param isX  true 为横向镜像, false为纵向镜像
+     * @param bmp_in_dir 输入图片路径
+     * @param bmp_out_dir 输出图片路径
+     */
+    static void mirror(bool isX,
+                       const char *bmp_in_dir,
+                       const char *bmp_out_dir = OUT_BMP_MIRROR);
+
+
+    /**
+     * 图像旋转
+     *
+     * @param theta 旋转角度(角度制)
+     * @param bmp_in_dir 输入图片路径
+     * @param bmp_out_dir 输出图片路径
+     */
+    static void rotate(double theta,
+                       const char *bmp_in_dir,
+                       const char *bmp_out_dir = OUT_BMP_ROTATE);
+
+private:
+
+
+    /**
+     * 对图像进行双线性插值
+     * @param bmp 输入图像
+     * @return 输出图像
+     */
+    static void interpolation(BMP bmp, bool isHor)
     {
-        for (i = 0; i < 10; i++)
+
+        for (int i = 0; i < bmp.width; ++i)
         {
-            for (j = 0; j < 10; j++)
+            for (int j = 0; j < bmp.height; ++j)
             {
-                printf("====\n");
+                int curGray = bmp.pDataBuffer[j * bmp.lineByte + i];
+                int minDeep = 15;
+                // 若当前颜色为黑色, 则需要进行插值
+                if (curGray <= minDeep)
+                {
+                    int len, cur;
+                    if (isHor)
+                    {
+                        len = bmp.width;
+                        cur = i;
+                    }
+                    else
+                    {
+                        len = bmp.height;
+                        cur = j;
+                    }
+
+                    // 线性插值
+                    int startIndex = -1, endIndex = -1;
+                    int startValue, endValue;
+                    for (int k = cur - 1; k >= 0; k--)
+                    {
+                        int g;
+                        if(isHor)
+                            g = bmp.pDataBuffer[j * bmp.lineByte + k];
+                        else
+                            g = bmp.pDataBuffer[k * bmp.lineByte + i];
+
+                        if (g > minDeep)
+                        {
+                            startIndex = k;
+                            break;
+                        }
+                    }
+                    for (int k = cur + 1; k < len; k++)
+                    {
+                        int g = bmp.pDataBuffer[j * bmp.lineByte + k];
+                        if (g > minDeep)
+                        {
+                            endIndex = k;
+                            break;
+                        }
+                    }
+                    // 两侧均找到非0值
+                    if (startIndex != -1 && endIndex != -1)
+                    {
+                        curGray = (endValue - startValue) *
+                                  (cur - startIndex) /
+                                  (endIndex - startIndex) + startValue;
+
+                        bmp.pDataBuffer[j * bmp.lineByte + i] = curGray;
+                    }
+                }
             }
         }
     }
+
+
 };
 
 

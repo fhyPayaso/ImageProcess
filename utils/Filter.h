@@ -31,6 +31,16 @@ public:
 
     static BMP midWithBorder(BMP bmp);
 
+private:
+
+    /**
+     * 扩充图片, 长宽各+2
+     * @param bmp
+     * @return
+     */
+    static BMP extend(BMP bmp);
+
+
 };
 
 
