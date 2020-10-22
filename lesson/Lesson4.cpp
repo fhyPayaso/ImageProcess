@@ -39,7 +39,17 @@ void Lesson4::scale(double widthScale, double heightScale, const char *bmp_in_di
         }
     }
 
-    interpolation(resBmp, false);
+    for (int i = 0; i < resBmp.width; ++i)
+    {
+        for (int j = 0; j < resBmp.height; ++j)
+        {
+            int x = i, y = j;
+            double xf = x / widthScale;
+            double yf = y / heightScale;
+            int resGray = (int) doubleInterpolation(bmp, xf, yf);
+            resBmp.pDataBuffer[y * resBmp.lineByte + x] = resGray;
+        }
+    }
 
     io.writeBmp(resBmp, bmp_out_dir);
     printf("scale image done!\n");
@@ -126,6 +136,7 @@ void Lesson4::rotate(double theta, const char *bmp_in_dir, const char *bmp_out_d
 
     // 获取旋转矩阵以及平移矩阵
     Matrix3X3f rotateM = MatrixUtil::genRotateMatrix(theta);
+    Matrix3X3f rotateMNeg = MatrixUtil::genRotateMatrix(-theta);
     Matrix3X3f transNegM = MatrixUtil::genTransformMatrix(-bmp.width / 2, -bmp.height / 2);
     Matrix3X3f transPosM = MatrixUtil::genTransformMatrix(bmp.width / 2, bmp.height / 2);
 
@@ -145,7 +156,7 @@ void Lesson4::rotate(double theta, const char *bmp_in_dir, const char *bmp_out_d
 
             int x = (int) V.vec[0];
             int y = (int) V.vec[1];
-            if (x >=0 && y>=0 && x < resBmp.width && y < resBmp.height)
+            if (x >= 0 && y >= 0 && x < resBmp.width && y < resBmp.height)
             {
                 int orgIndex = j * bmp.lineByte + i;
                 int curIndex = y * resBmp.lineByte + x;
@@ -153,6 +164,30 @@ void Lesson4::rotate(double theta, const char *bmp_in_dir, const char *bmp_out_d
             }
         }
     }
+
+    for (int i = 0; i < resBmp.width; ++i)
+    {
+        for (int j = 0; j < resBmp.height; ++j)
+        {
+            Vector3f V;
+            V.setXY(i, j);
+            // 首先将图片中心平移到(0,0)点
+            V = MatrixUtil::multi(transNegM, V);
+            // 以(0,0)点为圆心进行旋转
+            V = MatrixUtil::multi(rotateMNeg, V);
+            // 再将图片平移回原来的位置
+            V = MatrixUtil::multi(transPosM, V);
+
+            double xf = V.vec[0];
+            double yf = V.vec[1];
+            if (xf >= 0 && yf >= 0 && xf < resBmp.width - 1 && yf <= resBmp.height - 1)
+            {
+                int resGray = (int) doubleInterpolation(bmp, xf, yf);
+                resBmp.pDataBuffer[j * resBmp.lineByte + i] = resGray;
+            }
+        }
+    }
+
 
     io.writeBmp(resBmp, bmp_out_dir);
     printf("rotate image done!\n");

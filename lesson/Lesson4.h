@@ -85,68 +85,42 @@ private:
      * @param bmp 输入图像
      * @return 输出图像
      */
-    static void interpolation(BMP bmp, bool isHor)
+    static double doubleInterpolation(BMP bmp, double curX, double curY)
     {
+        // 获取周围四个点
+        // 向下取整
+        int startX = std::floor(curX);
+        int startY = std::floor(curY);
+        // 向上取整
+        int endX = std::ceil(curX);
+        int endY = std::ceil(curY);
 
-        for (int i = 0; i < bmp.width; ++i)
-        {
-            for (int j = 0; j < bmp.height; ++j)
-            {
-                int curGray = bmp.pDataBuffer[j * bmp.lineByte + i];
-                int minDeep = 15;
-                // 若当前颜色为黑色, 则需要进行插值
-                if (curGray <= minDeep)
-                {
-                    int len, cur;
-                    if (isHor)
-                    {
-                        len = bmp.width;
-                        cur = i;
-                    }
-                    else
-                    {
-                        len = bmp.height;
-                        cur = j;
-                    }
+        // 上下两次横向线性插值
+        double val00 = bmp.pDataBuffer[startY * bmp.lineByte + startX];
+        double val01 = bmp.pDataBuffer[startY * bmp.lineByte + endX];
+        double grayUp = singleInterpolation(startX, endX, curX, val00, val01);
 
-                    // 线性插值
-                    int startIndex = -1, endIndex = -1;
-                    int startValue, endValue;
-                    for (int k = cur - 1; k >= 0; k--)
-                    {
-                        int g;
-                        if(isHor)
-                            g = bmp.pDataBuffer[j * bmp.lineByte + k];
-                        else
-                            g = bmp.pDataBuffer[k * bmp.lineByte + i];
+        double val10 = bmp.pDataBuffer[endY * bmp.lineByte + startX];
+        double val11 = bmp.pDataBuffer[endY * bmp.lineByte + endX];
+        double grayDown = singleInterpolation(startX, endX, curX, val10, val11);
 
-                        if (g > minDeep)
-                        {
-                            startIndex = k;
-                            break;
-                        }
-                    }
-                    for (int k = cur + 1; k < len; k++)
-                    {
-                        int g = bmp.pDataBuffer[j * bmp.lineByte + k];
-                        if (g > minDeep)
-                        {
-                            endIndex = k;
-                            break;
-                        }
-                    }
-                    // 两侧均找到非0值
-                    if (startIndex != -1 && endIndex != -1)
-                    {
-                        curGray = (endValue - startValue) *
-                                  (cur - startIndex) /
-                                  (endIndex - startIndex) + startValue;
+        // 一次纵向线性插值
+        double grayRes = singleInterpolation(startY, endY, curY, grayUp, grayDown);
 
-                        bmp.pDataBuffer[j * bmp.lineByte + i] = curGray;
-                    }
-                }
-            }
-        }
+        return grayRes;
+    }
+
+
+    static double singleInterpolation(double startIndex, double endIndex, double midIndex,
+                                      double startValue, double endValue)
+    {
+        if (std::abs(startIndex - endIndex) < 0.0001)
+            return startValue;
+
+        double res = (endValue - startValue) *
+                     (midIndex - startIndex) /
+                     (endIndex - startIndex) + startValue;
+        return res;
     }
 
 

@@ -28,10 +28,10 @@ int main()
 //    Lesson3::medianFilterWithoutBorder(ORIGIN_BMP_GRAY8);
 //    Lesson3::medianFilterWithBorder(ORIGIN_BMP_GRAY8);
 
-    Lesson4::scale(1.0, 1.5, ORIGIN_BMP_GRAY8);
+//    Lesson4::scale(2.0, 1.5, ORIGIN_BMP_GRAY8);
 //    Lesson4::transform(50, 50, ORIGIN_BMP_GRAY8);
 //    Lesson4::mirror(false, ORIGIN_BMP_GRAY8);
-//    Lesson4::rotate(30, ORIGIN_BMP_GRAY8);
+    Lesson4::rotate(30, ORIGIN_BMP_GRAY8);
 
 
     return 0;
