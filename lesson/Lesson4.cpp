@@ -60,14 +60,20 @@ void Lesson4::transform(double xDiff, double yDiff, const char *bmp_in_dir, cons
     ImageIO io;
     BMP bmp = io.readBmp(bmp_in_dir);
     BMP resBmp = bmp;
+
+    int xExtend = std::ceil(std::abs(xDiff));
+    int yExtend = std::ceil(std::abs(yDiff));
+    resBmp.width = bmp.width + xExtend;
+    resBmp.height = bmp.height + yExtend;
+    resBmp.lineByte = (resBmp.width * resBmp.bitCount / 8 + 3) / 4 * 4;
     resBmp.pDataBuffer = (BYTE *) malloc(resBmp.lineByte * resBmp.height);
 
     // 获取平移矩阵
     Matrix3X3f transM = MatrixUtil::genTransformMatrix(xDiff, yDiff);
 
-    for (int i = 0; i < resBmp.width; ++i)
+    for (int i = 0; i < bmp.width; ++i)
     {
-        for (int j = 0; j < resBmp.height; ++j)
+        for (int j = 0; j < bmp.height; ++j)
         {
             Vector3f V;
             V.setXY(i, j);
@@ -75,12 +81,24 @@ void Lesson4::transform(double xDiff, double yDiff, const char *bmp_in_dir, cons
             Vector3f resV = MatrixUtil::multi(transM, V);
             int x = (int) resV.vec[0];
             int y = (int) resV.vec[1];
-            if (x < resBmp.width && y < resBmp.height)
-            {
-                int orgIndex = j * bmp.lineByte + i;
-                int curIndex = y * resBmp.lineByte + x;
-                resBmp.pDataBuffer[curIndex] = bmp.pDataBuffer[orgIndex];
-            }
+
+            //
+            int xFlag, yFlag = 0;
+            if (yDiff < 0)
+                yFlag = yExtend;
+            if (xDiff < 0)
+                xFlag = xExtend;
+
+//            if (x >= 0 && y >= 0 && x < resBmp.width && y < resBmp.height)
+//            {
+
+
+
+
+            int orgIndex = j * bmp.lineByte + i;
+            int curIndex = (y + yFlag) * resBmp.lineByte + (x + xFlag);
+            resBmp.pDataBuffer[curIndex] = bmp.pDataBuffer[orgIndex];
+//            }
         }
     }
 
@@ -114,7 +132,7 @@ void Lesson4::mirror(bool isX, const char *bmp_in_dir, const char *bmp_out_dir)
             Vector3f resV = MatrixUtil::multi(mirrorM, V);
             int x = (int) resV.vec[0];
             int y = (int) resV.vec[1];
-            if (x < resBmp.width && y < resBmp.height)
+            if (x >= 0 && y >= 0 && x < resBmp.width && y < resBmp.height)
             {
                 int orgIndex = j * bmp.lineByte + i;
                 int curIndex = y * resBmp.lineByte + x;
@@ -132,6 +150,12 @@ void Lesson4::rotate(double theta, const char *bmp_in_dir, const char *bmp_out_d
     ImageIO io;
     BMP bmp = io.readBmp(bmp_in_dir);
     BMP resBmp = bmp;
+
+    double extendAxis = 1.5;
+
+    resBmp.width = bmp.width * extendAxis;
+    resBmp.height = bmp.height * extendAxis;
+    resBmp.lineByte = (resBmp.width * resBmp.bitCount / 8 + 3) / 4 * 4;
     resBmp.pDataBuffer = (BYTE *) malloc(resBmp.lineByte * resBmp.height);
 
     // 获取旋转矩阵以及平移矩阵
@@ -140,9 +164,12 @@ void Lesson4::rotate(double theta, const char *bmp_in_dir, const char *bmp_out_d
     Matrix3X3f transNegM = MatrixUtil::genTransformMatrix(-bmp.width / 2, -bmp.height / 2);
     Matrix3X3f transPosM = MatrixUtil::genTransformMatrix(bmp.width / 2, bmp.height / 2);
 
-    for (int i = 0; i < resBmp.width; ++i)
+    Matrix3X3f transNegM2 = MatrixUtil::genTransformMatrix(-resBmp.width / 2, -resBmp.height / 2);
+    Matrix3X3f transPosM2 = MatrixUtil::genTransformMatrix(resBmp.width / 2, resBmp.height / 2);
+
+    for (int i = 0; i < bmp.width; ++i)
     {
-        for (int j = 0; j < resBmp.height; ++j)
+        for (int j = 0; j < bmp.height; ++j)
         {
             Vector3f V;
             V.setXY(i, j);
@@ -151,7 +178,7 @@ void Lesson4::rotate(double theta, const char *bmp_in_dir, const char *bmp_out_d
             // 以(0,0)点为圆心进行旋转
             V = MatrixUtil::multi(rotateM, V);
             // 再将图片平移回原来的位置
-            V = MatrixUtil::multi(transPosM, V);
+            V = MatrixUtil::multi(transPosM2, V);
 
 
             int x = (int) V.vec[0];
@@ -172,7 +199,7 @@ void Lesson4::rotate(double theta, const char *bmp_in_dir, const char *bmp_out_d
             Vector3f V;
             V.setXY(i, j);
             // 首先将图片中心平移到(0,0)点
-            V = MatrixUtil::multi(transNegM, V);
+            V = MatrixUtil::multi(transNegM2, V);
             // 以(0,0)点为圆心进行旋转
             V = MatrixUtil::multi(rotateMNeg, V);
             // 再将图片平移回原来的位置
@@ -180,7 +207,7 @@ void Lesson4::rotate(double theta, const char *bmp_in_dir, const char *bmp_out_d
 
             double xf = V.vec[0];
             double yf = V.vec[1];
-            if (xf >= 0 && yf >= 0 && xf < resBmp.width - 1 && yf <= resBmp.height - 1)
+            if (xf >= 0 && yf >= 0 && xf < bmp.width - 1 && yf < bmp.height - 1)
             {
                 int resGray = (int) doubleInterpolation(bmp, xf, yf);
                 resBmp.pDataBuffer[j * resBmp.lineByte + i] = resGray;
