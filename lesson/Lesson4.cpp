@@ -82,8 +82,7 @@ void Lesson4::transform(double xDiff, double yDiff, const char *bmp_in_dir, cons
             int x = (int) resV.vec[0];
             int y = (int) resV.vec[1];
 
-            //
-            int xFlag, yFlag = 0;
+            int xFlag = 0, yFlag = 0;
             if (yDiff < 0)
                 yFlag = yExtend;
             if (xDiff < 0)

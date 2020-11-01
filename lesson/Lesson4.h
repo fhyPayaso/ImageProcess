@@ -77,6 +77,12 @@ public:
                        const char *bmp_in_dir,
                        const char *bmp_out_dir = OUT_BMP_ROTATE);
 
+//    static void perspective(double theta,
+//                       const char *bmp_in_dir,
+//                       const char *bmp_out_dir = OUT_BMP_ROTATE);
+
+
+
 private:
 
 

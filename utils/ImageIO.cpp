@@ -27,7 +27,7 @@ BMP ImageIO::readBmp(const char *bmpPath)
     // 读取文件头
     BITMAPFILEHEADER bmFileHeader;
     fread(&bmFileHeader, sizeof(BITMAPFILEHEADER), 1, fp);
-    showBmpFileHead(&bmFileHeader);
+//    showBmpFileHead(&bmFileHeader);
     // 需要对文件类型进行判断
     if (bmFileHeader.bfType != 0x4d42)
     {
@@ -38,7 +38,7 @@ BMP ImageIO::readBmp(const char *bmpPath)
     // 读取信息头
     BITMAPINFOHEADER bmInfoHeader;
     fread(&bmInfoHeader, sizeof(BITMAPINFOHEADER), 1, fp);
-    showBmpInfoHead(&bmInfoHeader);
+//    showBmpInfoHead(&bmInfoHeader);
 
     // 构建Bmp
     bmp.width = bmInfoHeader.biWidth;

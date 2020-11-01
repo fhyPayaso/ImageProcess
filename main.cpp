@@ -5,6 +5,7 @@
 #include "lesson/Lesson2.h"
 #include "lesson/Lesson3.h"
 #include "lesson/Lesson4.h"
+#include "lesson/Lesson5.h"
 
 
 const char *ORIGIN_BMP = "../bitmaps/test5.bmp";
@@ -29,9 +30,13 @@ int main()
 //    Lesson3::medianFilterWithBorder(ORIGIN_BMP_GRAY8);
 
 //    Lesson4::scale(2.0, 1.5, ORIGIN_BMP_GRAY8);
-    Lesson4::transform(50, 50, ORIGIN_BMP_GRAY8);
+//    Lesson4::transform(50, 50, ORIGIN_BMP_GRAY8);
 //    Lesson4::mirror(false, ORIGIN_BMP_GRAY8);
 //    Lesson4::rotate(30, ORIGIN_BMP_GRAY8);
+
+    Lesson5::configThreshold(128, ORIGIN_BMP_GRAY8);
+    Lesson5::iterationThreshold(ORIGIN_BMP_GRAY8);
+    Lesson5::otsuThreshold(ORIGIN_BMP_GRAY8);
 
 
     return 0;
