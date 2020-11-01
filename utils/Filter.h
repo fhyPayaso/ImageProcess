@@ -12,8 +12,7 @@
 #include <algorithm>
 #include <string>
 
-const int hMove[9] = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
-const int wMove[9] = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
+
 
 class Filter
 {

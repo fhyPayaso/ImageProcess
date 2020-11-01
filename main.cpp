@@ -6,6 +6,7 @@
 #include "lesson/Lesson3.h"
 #include "lesson/Lesson4.h"
 #include "lesson/Lesson5.h"
+#include "lesson/Lesson6.h"
 
 
 const char *ORIGIN_BMP = "../bitmaps/test5.bmp";
@@ -34,9 +35,12 @@ int main()
 //    Lesson4::mirror(false, ORIGIN_BMP_GRAY8);
 //    Lesson4::rotate(30, ORIGIN_BMP_GRAY8);
 
-    Lesson5::configThreshold(128, ORIGIN_BMP_GRAY8);
-    Lesson5::iterationThreshold(ORIGIN_BMP_GRAY8);
-    Lesson5::otsuThreshold(ORIGIN_BMP_GRAY8);
+//    Lesson5::configThreshold(128, ORIGIN_BMP_GRAY8);
+//    Lesson5::iterationThreshold(ORIGIN_BMP_GRAY8);
+//    Lesson5::otsuThreshold(ORIGIN_BMP_GRAY8);
+
+//    Lesson6::segmentWithSeed(Point2i(100, 100), 5, ORIGIN_BMP_GRAY8);
+    Lesson6::segmentWithoutSeed(ORIGIN_BMP_GRAY8);
 
 
     return 0;

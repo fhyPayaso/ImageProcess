@@ -13,6 +13,8 @@
 #include "stdlib.h"
 #include "stdio.h"
 
+const int hMove[9] = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
+const int wMove[9] = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
 
 typedef unsigned char BYTE; // 1
 typedef unsigned short WORD; // 2
@@ -64,6 +66,18 @@ typedef struct tagBmp
     RGBQUAD *pRgbTable;
     BYTE *pDataBuffer;
 } BMP;
+
+typedef struct tagPoint2i
+{
+
+
+    tagPoint2i(int x = 0, int y = 0) : x(x), y(y)
+    {}
+
+    int x;
+    int y;
+
+} Point2i;
 
 
 class ImageIO
