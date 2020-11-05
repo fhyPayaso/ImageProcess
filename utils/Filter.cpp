@@ -116,6 +116,8 @@ BMP Filter::midWithoutBorder(BMP bmp)
 {
     BMP resBmp = bmp;
 
+    resBmp.pDataBuffer = (BYTE *) malloc(bmp.lineByte * bmp.height);
+
     for (int i = 0; i < bmp.height; ++i)
     {
         for (int j = 0; j < bmp.width; ++j)

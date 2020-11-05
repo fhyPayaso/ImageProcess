@@ -141,7 +141,10 @@ void Lesson5::otsuThreshold(const char *bmp_in_dir, const char *bmp_out_dir, con
 
     printf("otsu best threshold : %d!\n", bestThreshold);
     configThreshold(bestThreshold, bmp_in_dir, bmp_out_dir);
-    Histogram histogram(bmp);
-    BMP thresholdHis = histogram.buildHistogramWithThreshold(bestThreshold);
-    io.writeBmp(thresholdHis, his_out_dir);
+    if(his_out_dir != NULL)
+    {
+        Histogram histogram(bmp);
+        BMP thresholdHis = histogram.buildHistogramWithThreshold(bestThreshold);
+        io.writeBmp(thresholdHis, his_out_dir);
+    }
 }
