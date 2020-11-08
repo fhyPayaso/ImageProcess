@@ -17,6 +17,10 @@ void Lesson6::segmentWithSeed(Point2i originPoint, int t, const char *bmp_in_dir
     int flagTable[resBmp.height][resBmp.width];
     for (int i = 0; i < resBmp.height; i++)
         for (int j = 0; j < resBmp.width; j++)
+            resBmp.pDataBuffer[i * resBmp.lineByte + j] = 255;
+
+    for (int i = 0; i < resBmp.height; i++)
+        for (int j = 0; j < resBmp.width; j++)
             flagTable[i][j] = 0;
 //    memset(flagTable, 0, resBmp.height * resBmp.width);
 
@@ -31,7 +35,7 @@ void Lesson6::segmentWithSeed(Point2i originPoint, int t, const char *bmp_in_dir
         originPoint.x = curPnt.x;
         originPoint.y = curPnt.y;
 
-        for (int i = 0; i < 8; ++i)
+        for (int i = 0; i < 9; ++i)
         {
             Point2i growPnt;
             growPnt.x = wMove[i] + curPnt.x;
@@ -45,7 +49,7 @@ void Lesson6::segmentWithSeed(Point2i originPoint, int t, const char *bmp_in_dir
                     // 相邻点符合阈值条件
                     if (std::abs(bmp.pDataBuffer[curIndex] - bmp.pDataBuffer[growIndex]) <= t)
                     {
-                        resBmp.pDataBuffer[growIndex] = 255;
+                        resBmp.pDataBuffer[growIndex] = 0;
                         pointList.push(growPnt);
                         flagTable[growPnt.y][growPnt.x] = 1;
                     }
@@ -118,7 +122,7 @@ void Lesson6::segmentWithoutSeed(const char *bmp_in_dir, const char *bmp_out_dir
                     continue;
 
                 // 当前区域宽度为2的时候
-                if (heightTemp[i] * widthTemp[j] == 1)
+                if (heightTemp[i] * widthTemp[j] == 3)
                 {
                     int k = subBaseIndex;
                     if (k < bmp.lineByte * bmp.height - 1)
@@ -126,13 +130,13 @@ void Lesson6::segmentWithoutSeed(const char *bmp_in_dir, const char *bmp_out_dir
                         if (bmp.pDataBuffer[k] < 128)
                         {
 
-                            resBmp.pDataBuffer[k] = 255;
-                            resBmp.pDataBuffer[k + 1] = 255;
+                            resBmp.pDataBuffer[k] = 0;
+                            resBmp.pDataBuffer[k + 1] = 0;
                         }
                         else
                         {
-                            resBmp.pDataBuffer[k] = 0;
-                            resBmp.pDataBuffer[k + 1] = 0;
+                            resBmp.pDataBuffer[k] = 255;
+                            resBmp.pDataBuffer[k + 1] = 255;
                         }
                     }
                     continue;
@@ -162,8 +166,8 @@ void Lesson6::segmentWithoutSeed(const char *bmp_in_dir, const char *bmp_out_dir
                             curIndex = subBaseIndex + h * bmp.lineByte + w;
                             if (curIndex < bmp.lineByte * bmp.height - 1)
                             {
-                                resBmp.pDataBuffer[curIndex] = 0;
-                                resBmp.pDataBuffer[curIndex + 1] = 0;
+                                resBmp.pDataBuffer[curIndex] = 255;
+                                resBmp.pDataBuffer[curIndex + 1] = 255;
                             }
                         }
                     }

@@ -41,7 +41,7 @@ void Lesson7::prewittEdgeDetection(const char *bmp_in_dir, const char *bmp_out_d
     }
 
     io.writeBmp(resBmp, bmp_out_dir);
-    Lesson5::otsuThreshold(bmp_out_dir, bmp_out_dir, NULL);
+//    Lesson5::otsuThreshold(bmp_out_dir, bmp_out_dir, NULL);
     printf("prewitt edge detection done! \n");
 }
 
@@ -64,7 +64,7 @@ void Lesson7::sobelEdgeDetection(const char *bmp_in_dir, const char *bmp_out_dir
         }
     }
     io.writeBmp(resBmp, bmp_out_dir);
-    Lesson5::otsuThreshold(bmp_out_dir, bmp_out_dir, NULL);
+//    Lesson5::otsuThreshold(bmp_out_dir, bmp_out_dir, NULL);
     printf("sobel edge detection done! \n");
 }
 
@@ -73,7 +73,8 @@ void Lesson7::LOGEdgeDetection(const char *bmp_in_dir, const char *bmp_out_dir)
     ImageIO io;
     BMP bmp = io.readBmp(bmp_in_dir);
 
-    BMP resBmp = Filter::midWithoutBorder(bmp);
+//    BMP resBmp = Filter::midWithoutBorder(bmp);
+    BMP resBmp = Filter::gaussian(bmp);
 
     for (int i = 1; i < bmp.height - 1; i++)
     {
@@ -85,6 +86,6 @@ void Lesson7::LOGEdgeDetection(const char *bmp_in_dir, const char *bmp_out_dir)
         }
     }
     io.writeBmp(resBmp, bmp_out_dir);
-    Lesson5::otsuThreshold(bmp_out_dir, bmp_out_dir, NULL);
+//    Lesson5::otsuThreshold(bmp_out_dir, bmp_out_dir, NULL);
     printf("LOG edge detection done! \n");
 }

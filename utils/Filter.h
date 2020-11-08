@@ -30,6 +30,8 @@ public:
 
     static BMP midWithBorder(BMP bmp);
 
+    static BMP gaussian(BMP bmp);
+
 private:
 
     /**

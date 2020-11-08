@@ -221,3 +221,37 @@ BMP Filter::extend(BMP bmp)
 
     return resBmp;
 }
+
+
+BMP Filter::gaussian(BMP bmp)
+{
+    BMP resBmp = bmp;
+
+    resBmp.pDataBuffer = (BYTE *) malloc(bmp.lineByte * bmp.height);
+
+    for (int i = 0; i < bmp.height; ++i)
+    {
+        for (int j = 0; j < bmp.width; ++j)
+        {
+            if (i > 0 && j > 0 && i < bmp.height - 1 && j < bmp.width - 1)
+            {
+                int temp[9];
+                for (int k = 0; k < 9; ++k)
+                {
+                    int curH = hMove[k] + i;
+                    int curW = wMove[k] + j;
+                    LONG index = bmp.lineByte * curH + curW;
+                    int curVal = int(bmp.pDataBuffer[index]);
+                    temp[k] = curVal;
+                }
+
+                int curGary = temp[0] + 2 * temp[1] + temp[2] +
+                              2 * temp[3] + 4 * temp[4] + 2 * temp[5] +
+                              temp[6] + 2 * temp[7] + temp[8];
+
+                resBmp.pDataBuffer[bmp.lineByte * i + j] = curGary / 16;
+            }
+        }
+    }
+    return resBmp;
+}
