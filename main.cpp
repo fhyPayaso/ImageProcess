@@ -11,6 +11,7 @@
 #include "lesson/Lesson6.h"
 #include "lesson/Lesson7.h"
 #include "lesson/Lesson8.h"
+#include "lesson/Lesson9.h"
 
 
 const char *ORIGIN_BMP = "../bitmaps/test5.bmp";
@@ -21,7 +22,6 @@ const char *ORIGIN_BMP_RICE = "../bitmaps/rice.bmp";
 
 //const char *ORIGIN_BMP_LINE = "../bitmaps/image3.bmp";
 const char *ORIGIN_BMP_LINE = "../bitmaps/5.bmp";
-//const char *ORIGIN_BMP_LINE = "../bitmaps/hough_line.bmp";
 
 
 int main()
@@ -55,7 +55,10 @@ int main()
 //    Lesson7::LOGEdgeDetection(ORIGIN_BMP_GRAY8);
 
 //    MockUtil::genLineBMP(ORIGIN_BMP_GRAY8);
-    Lesson8::hough(6, ORIGIN_BMP_LINE);
+//    Lesson8::hough(6, ORIGIN_BMP_LINE);
+
+    Lesson9::regionMark(OUT_BMP_SEGMENT_WITH_SEED);
+    Lesson9::regionPick(OUT_BMP_SEGMENT_WITH_SEED);
 
 
     return 0;
