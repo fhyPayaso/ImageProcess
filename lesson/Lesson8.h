@@ -14,7 +14,8 @@
 #include <vector>
 #include <algorithm>
 
-const static char *OUT_BMP_HOUGH = "../bitmaps/lesson8/edge_detection_hough.bmp";
+const static char *OUT_BMP_HOUGH1 = "../bitmaps/lesson8/edge_detection_hough1.bmp";
+const static char *OUT_BMP_HOUGH2 = "../bitmaps/lesson8/edge_detection_hough2.bmp";
 
 class Lesson8
 {
@@ -51,7 +52,7 @@ public:
 
 
     static void hough(int renderNum, const char *bmp_in_dir,
-                      const char *bmp_out_dir = OUT_BMP_HOUGH);
+                      const char *bmp_out_dir);
 };
 
 

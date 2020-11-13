@@ -9,6 +9,10 @@
 #include "ImageIO.h"
 
 #include <cmath>
+#include <cstring>
+
+#include <sys/stat.h>
+#include <sys/types.h>
 
 using namespace std;
 
@@ -88,6 +92,15 @@ void ImageIO::writeBmp(BMP bmp, const char *bmpOutPath)
 
     bmp.lineByte = (bmp.width * bmp.bitCount / 8 + 3) / 4 * 4;
     FILE *fp = fopen(bmpOutPath, "wb");
+    if (fp == 0)
+    {
+        // 若不存在文件夹则进行创建
+        char copyPath[100];
+        strcpy(copyPath, bmpOutPath);
+        strrchr(copyPath, '/')[0] = 0;
+        mkdir(copyPath, 0777);
+    }
+    fp = fopen(bmpOutPath, "wb");
     if (fp == 0) return;
     // <========================= 写入文件头 ==========================> //
     BITMAPFILEHEADER fileHead;

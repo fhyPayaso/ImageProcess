@@ -122,7 +122,7 @@ void Lesson6::segmentWithoutSeed(const char *bmp_in_dir, const char *bmp_out_dir
                     continue;
 
                 // 当前区域宽度为2的时候
-                if (heightTemp[i] * widthTemp[j] == 3)
+                if (heightTemp[i] * widthTemp[j] == 1)
                 {
                     int k = subBaseIndex;
                     if (k < bmp.lineByte * bmp.height - 1)
@@ -141,7 +141,6 @@ void Lesson6::segmentWithoutSeed(const char *bmp_in_dir, const char *bmp_out_dir
                     }
                     continue;
                 }
-
 
                 // 计算当前去区域内的灰度平均值
                 grayTemp[i - 1][j - 1] = curGraySum / (heightTemp[i] * widthTemp[j]);

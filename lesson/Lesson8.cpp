@@ -22,7 +22,6 @@ void Lesson8::hough(int renderNum, const char *bmp_in_dir, const char *bmp_out_d
     int PolarCoordinates[THETA_MAX][P_MAX];
     // 记录每个直线的范围
     RangeInfo rangeInfoTable[THETA_MAX][P_MAX];
-
     for (int i = 0; i < THETA_MAX; i++)
     {
         for (int j = 0; j < P_MAX; j++)
@@ -32,6 +31,7 @@ void Lesson8::hough(int renderNum, const char *bmp_in_dir, const char *bmp_out_d
             PolarCoordinates[i][j] = 0;
         }
     }
+
 
 
     for (int y = 0; y < bmp.height; y++)
@@ -139,11 +139,11 @@ void Lesson8::hough(int renderNum, const char *bmp_in_dir, const char *bmp_out_d
 
 #endif
     printf("size： %d\n", int(newLineVec.size()));
-    for (int k = 0; k < 100; ++k)
-    {
-        Coordinate c = newLineVec[k];
-        printf("index%d ====> p: %d,  theta:%d,  num:%d\n", k, c.p, c.theta, c.num);
-    }
+//    for (int k = 0; k < 100; ++k)
+//    {
+//        Coordinate c = newLineVec[k];
+//        printf("index%d ====> p: %d,  theta:%d,  num:%d\n", k, c.p, c.theta, c.num);
+//    }
 
 
     renderNum = std::min(renderNum, int(newLineVec.size()));

@@ -54,7 +54,7 @@ BMP Histogram::buildHistogramBmp()
         int curGrayCount = mGrayBuffer[i];
         if(curGrayCount > 0)
         {
-            printf("index  %d:%d  \n",i,curGrayCount);
+//            printf("index  %d:%d  \n",i,curGrayCount);
         }
 
 //        double garyNormal = (curGrayCount * 1.0) / (mGrayBmp.height * mGrayBmp.width);
@@ -82,7 +82,7 @@ BMP Histogram::equalizeBmp()
         grayScore[i] = (mGrayBuffer[i] * 1.0) / (mGrayBmp.height * mGrayBmp.width);
         if (i > 0)
             grayScore[i] += grayScore[i - 1];
-        printf("score %d: %f\n", i, grayScore[i]);
+//        printf("score %d: %f\n", i, grayScore[i]);
     }
     for (int i = 0; i < mGrayBmp.height; i++)
     {

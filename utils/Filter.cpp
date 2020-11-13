@@ -12,6 +12,8 @@
 BMP Filter::averageWithoutBorder(BMP bmp)
 {
     BMP resBmp = bmp;
+    resBmp.pDataBuffer = (BYTE *) malloc(bmp.lineByte * bmp.height);
+
     for (int i = 0; i < bmp.height; ++i)
     {
         for (int j = 0; j < bmp.width; ++j)
@@ -29,6 +31,11 @@ BMP Filter::averageWithoutBorder(BMP bmp)
                 }
                 resBmp.pDataBuffer[bmp.lineByte * i + j] = totalVal / 9;
             }
+            else
+            {
+                int index = bmp.lineByte * i + j;
+                resBmp.pDataBuffer[index] = bmp.pDataBuffer[index];
+            }
         }
     }
     return resBmp;
@@ -36,55 +43,9 @@ BMP Filter::averageWithoutBorder(BMP bmp)
 
 BMP Filter::averageWithBorder(BMP bmp)
 {
-
-//    // 将原来的边界两侧分别扩大1
-//    LONG bHeight = bmp.height + 2;
-//    LONG bWidth = bmp.width + 2;
-//    LONG bLineByte = (bHeight * bmp.bitCount / 8 + 3) * 4;
-//    LONG newDataSize = bHeight * bLineByte;
-//
-//    // 将原始图像扩充为新图像
-//    BYTE *pTempDataBuffer = (BYTE *) malloc(newDataSize);
-//    for (int i = 0; i < bHeight; i++)
-//    {
-//        for (int j = 0; j < bWidth; j++)
-//        {
-//            LONG index = i * bLineByte + j;
-//            pTempDataBuffer[index] = 128;
-//            // 非边界点直接填充到新图像中
-//            if (i > 0 && j > 0 && i < bHeight - 1 && j < bWidth - 1)
-//            {
-//                LONG orgIndex = (i - 1) * bmp.lineByte + (j - 1);
-//                pTempDataBuffer[index] = bmp.pDataBuffer[orgIndex];
-//            }
-//
-//        }
-//    }
-//    // 对新图像进行均值滤波
-//    for (int i = 0; i < bHeight; ++i)
-//    {
-//        for (int j = 0; j < bWidth; ++j)
-//        {
-//            // 边界无需处理
-//            if (i > 0 && j > 0 && i < bHeight - 1 && j < bWidth - 1)
-//            {
-//                int totalVal = 0;
-//                for (int k = 0; k < 9; ++k)
-//                {
-//                    int curH = hMove[k] + i;
-//                    int curW = wMove[k] + j;
-//                    LONG index = bLineByte * curH + curW;
-//                    int curVal = int(pTempDataBuffer[index]);
-//                    totalVal += curVal;
-//                }
-//                LONG orgIndex = (i - 1) * bmp.lineByte + (j - 1);
-//                bmp.pDataBuffer[orgIndex] = totalVal / 9;
-//            }
-//        }
-//    }
-//    return bmp;
-
     BMP resBmp = bmp;
+    resBmp.pDataBuffer = (BYTE *) malloc(bmp.lineByte * bmp.height);
+
     for (int i = 0; i < bmp.height; ++i)
     {
         for (int j = 0; j < bmp.width; ++j)
@@ -104,20 +65,15 @@ BMP Filter::averageWithBorder(BMP bmp)
                 }
             }
             resBmp.pDataBuffer[bmp.lineByte * i + j] = totalVal / num;
-
         }
     }
     return resBmp;
-
-
 }
 
 BMP Filter::midWithoutBorder(BMP bmp)
 {
     BMP resBmp = bmp;
-
-    resBmp.pDataBuffer = (BYTE *) malloc(bmp.lineByte * bmp.height);
-
+//    resBmp.pDataBuffer = (BYTE *) malloc(bmp.lineByte * bmp.height);
     for (int i = 0; i < bmp.height; ++i)
     {
         for (int j = 0; j < bmp.width; ++j)
@@ -136,6 +92,11 @@ BMP Filter::midWithoutBorder(BMP bmp)
                 std::sort(temp, temp + 9);
                 resBmp.pDataBuffer[bmp.lineByte * i + j] = temp[4];
             }
+//            else
+//            {
+//                int index = bmp.lineByte * i + j;
+//                resBmp.pDataBuffer[index] = bmp.pDataBuffer[index];
+//            }
         }
     }
     return resBmp;
@@ -144,45 +105,45 @@ BMP Filter::midWithoutBorder(BMP bmp)
 BMP Filter::midWithBorder(BMP bmp)
 {
 
-    BMP resBmp = bmp;
-    BMP extendBmp = extend(bmp);
-    BMP midBmp = midWithoutBorder(extendBmp);
-    for (int i = 1; i < midBmp.height - 1; ++i)
-    {
-        for (int j = 1; j < midBmp.width - 1; ++j)
-        {
-            int x = i - 1;
-            int y = j - 1;
-            resBmp.pDataBuffer[x * resBmp.lineByte + y] =
-                    midBmp.pDataBuffer[i * midBmp.lineByte + j];
-        }
-    }
-    return extendBmp;
-
 //    BMP resBmp = bmp;
-//
-//    for (int i = 0; i < bmp.height; ++i)
+//    BMP extendBmp = extend(bmp);
+//    BMP midBmp = midWithoutBorder(extendBmp);
+//    for (int i = 1; i < midBmp.height - 1; ++i)
 //    {
-//        for (int j = 0; j < bmp.width; ++j)
+//        for (int j = 1; j < midBmp.width - 1; ++j)
 //        {
-//            std::vector<int> temp;
-//            for (int k = 0; k < 9; ++k)
-//            {
-//                int curH = hMove[k] + i;
-//                int curW = wMove[k] + j;
-//                if (curH >= 0 && curW >= 0 && curH < bmp.height && curW < bmp.width)
-//                {
-//                    LONG index = bmp.lineByte * curH + curW;
-//                    int curVal = int(bmp.pDataBuffer[index]);
-//                    temp.push_back(curVal);
-//                }
-//            }
-//            std::sort(temp.begin(), temp.end());
-//            int len = temp.size();
-//            resBmp.pDataBuffer[bmp.lineByte * i + j] = temp[len / 2];
+//            int x = i - 1;
+//            int y = j - 1;
+//            resBmp.pDataBuffer[x * resBmp.lineByte + y] =
+//                    midBmp.pDataBuffer[i * midBmp.lineByte + j];
 //        }
 //    }
-//    return resBmp;
+//    return extendBmp;
+
+    BMP resBmp = bmp;
+//    resBmp.pDataBuffer = (BYTE *) malloc(bmp.lineByte * bmp.height);
+    for (int i = 0; i < bmp.height; ++i)
+    {
+        for (int j = 0; j < bmp.width; ++j)
+        {
+            std::vector<int> temp;
+            for (int k = 0; k < 9; ++k)
+            {
+                int curH = hMove[k] + i;
+                int curW = wMove[k] + j;
+                if (curH >= 0 && curW >= 0 && curH < bmp.height && curW < bmp.width)
+                {
+                    LONG index = bmp.lineByte * curH + curW;
+                    int curVal = int(bmp.pDataBuffer[index]);
+                    temp.push_back(curVal);
+                }
+            }
+            std::sort(temp.begin(), temp.end());
+            int len = temp.size();
+            resBmp.pDataBuffer[bmp.lineByte * i + j] = temp[len / 2];
+        }
+    }
+    return resBmp;
 
 }
 
